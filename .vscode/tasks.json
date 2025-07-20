@@ -1,0 +1,11 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Upload main.py",
+        "type": "shell",
+        "command": "mpremote cp main.py :main.py"
+      }
+    ]
+  }
+  
