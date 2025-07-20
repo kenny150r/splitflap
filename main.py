@@ -1,22 +1,40 @@
-import network, time, socket, machine, random
+import time
+from machine import Pin
 
-led = machine.Pin("LED", machine.Pin.OUT)
+IN_PINS = [14, 15, 16, 17]
+coil = [Pin(p, Pin.OUT) for p in IN_PINS]
 
-# Blink while connecting
-wlan = network.WLAN(network.STA_IF)
-wlan.active(True)
-wlan.connect("YOUR_SSID", "YOUR_PASSWORD")
-while not wlan.isconnected():
-    led.toggle()
-    time.sleep(random.uniform(0.1, 1.0))
-    print("checking connection")
-led.on()
-print("IP:", wlan.ifconfig()[0])
+SEQ = [                       # full‑step, two‑coil
+    (1, 0, 0, 0),
+    (0, 1, 0, 0),
+    (0, 0, 1, 0),
+    (0, 0, 0, 1),
+]
 
-# Tiny HTTP fetch
-addr = socket.getaddrinfo("example.com", 80)[0][-1]
-s = socket.socket()
-s.connect(addr)
-s.send(b"GET / HTTP/1.0\r\nHost: example.com\r\n\r\n")
-print(s.recv(200))
-s.close()
+STEP_DELAY_MS = 4             # 4 ms ≈ 10 RPM
+STEPS_PER_REV = 2048         # 28BYJ-48 full-step
+FLAPS = 36
+STEPS_PER_FLAP = STEPS_PER_REV // FLAPS  # ≈57 steps per flap
+step_index = 0
+
+def step_once(direction=1):
+    global step_index
+    step_index = (step_index + direction) & 3   # 0‑3 wrap‑around
+    for pin, val in zip(coil, SEQ[step_index]):
+        pin.value(val)
+
+def advance_one_flap():
+    """Advance exactly one flap."""
+    for _ in range(STEPS_PER_FLAP):
+        step_once(-1)  # Counter-clockwise
+        time.sleep_ms(STEP_DELAY_MS)
+
+def release_motor():
+    for p in coil:
+        p.value(0)
+
+print("One flap every 10 seconds, 36 flaps per revolution")
+while True:
+    advance_one_flap()
+    release_motor()
+    time.sleep(0.3)
