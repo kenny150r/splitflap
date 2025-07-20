@@ -9,6 +9,7 @@ wlan.connect("YOUR_SSID", "YOUR_PASSWORD")
 while not wlan.isconnected():
     led.toggle()
     time.sleep(random.uniform(0.1, 1.0))
+    print("checking connection")
 led.on()
 print("IP:", wlan.ifconfig()[0])
 

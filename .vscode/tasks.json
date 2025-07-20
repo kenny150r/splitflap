@@ -2,53 +2,23 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Upload main.py",
+      "label": "Upload‑Run‑REPL",
       "type": "shell",
-      "command": "mpremote",
+      "command": "bash",
       "args": [
-        "cp",
-        "main.py",
-        ":main.py"
+        "-c",
+        "mpremote cp main.py :main.py && mpremote reset && sleep 1 && mpremote repl"
       ],
       "presentation": {
-        "reveal": "always"
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "Upload & Run",
-      "type": "shell",
-      "command": "mpremote",
-      "args": [
-        "cp",
-        "main.py",
-        ":main.py",
-        "&&",
-        "mpremote",
-        "reset",
-        "run",
-        ":main.py"
-      ],
-      "presentation": {
-        "reveal": "always"
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
       },
       "problemMatcher": [],
       "group": {
         "kind": "build",
         "isDefault": true
       }
-    },
-    {
-      "label": "REPL",
-      "type": "shell",
-      "command": "mpremote",
-      "args": [
-        "repl"
-      ],
-      "presentation": {
-        "reveal": "always"
-      },
-      "problemMatcher": []
     }
   ]
 }
