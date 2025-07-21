@@ -1,5 +1,8 @@
-# splitflap repo
-Split flap code for Pi Pico W 2
+# Split-Flap Display
+
+
+
+
 
 ## Wiring: Raspberry Pi Pico W → ULN2003 → 28BYJ‑48
 
